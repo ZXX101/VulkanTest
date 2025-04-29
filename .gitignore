@@ -29,6 +29,7 @@
 !*.vcxproj
 !*.vcxproj.filters
 !*.sln
+!**.bat
 # 忽略特定文件
 CMakeUserPresets.json
 *.user
