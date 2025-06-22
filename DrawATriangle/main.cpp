@@ -56,7 +56,7 @@ static std::vector<char> readFile(const std::string& filename) {
 	}
 
 	//The advantage of starting to read at the end of the file is that we can use the read position to determine the size of the file and allocate a buffer
-	//´Ó½áÎ²¶Á¿ÉÒÔ·½±ãÖªµÀÎÄ¼ş´óĞ¡£¬ÓÃÓÚ·ÖÅävector
+	//ä»ç»“å°¾è¯»å¯ä»¥æ–¹ä¾¿çŸ¥é“æ–‡ä»¶å¤§å°ï¼Œç”¨äºåˆ†é…vector
 	size_t fileSize = (size_t)file.tellg();
 	std::vector<char> buffer(fileSize);
 
@@ -119,8 +119,6 @@ private:
 		vkDestroyInstance(instance, nullptr);
 		glfwDestroyWindow(window);
 		glfwTerminate();
-		vkDestroyShaderModule(device, fragShaderModule, nullptr);
-		vkDestroyShaderModule(device, vertShaderModule, nullptr);
 	}
 
 private:
@@ -247,10 +245,10 @@ private:
 
 	std::vector<const char*> getRequiredExtensions() {
 		uint32_t glfwExtensionCount = 0;
-		const char** glfwExtensions;//´æ´¢Ö¸ÕëÊı×éµÄÆğÊ¼µØÖ·µÄÖ¸Õë
+		const char** glfwExtensions;//å­˜å‚¨æŒ‡é’ˆæ•°ç»„çš„èµ·å§‹åœ°å€çš„æŒ‡é’ˆ
 		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-		//Ê¹ÓÃÁíÒ»¸öÊı×é£¨vector»òÆÕÍ¨Êı×é£©µÄÖ¸ÕëÀ´³õÊ¼»¯£¬²ÎÊıÎªbegin & end pointer
+		//ä½¿ç”¨å¦ä¸€ä¸ªæ•°ç»„ï¼ˆvectoræˆ–æ™®é€šæ•°ç»„ï¼‰çš„æŒ‡é’ˆæ¥åˆå§‹åŒ–ï¼Œå‚æ•°ä¸ºbegin & end pointer
 		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
 		if (enableValidationLayers) {
@@ -262,8 +260,8 @@ private:
 	}
 
 	static  VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
-		VkDebugUtilsMessageSeverityFlagBitsEXT messageServerity,//ÑÏÖØĞÔ can use compare
-		VkDebugUtilsMessageTypeFlagsEXT messageType,//ÎŞ¹Ø¹æ·¶»òĞÔÄÜ£¬¹æ·¶Ïà¹Ø»ò¿ÉÄÜµÄ´íÎó£¬ĞÔÄÜÏà¹Ø
+		VkDebugUtilsMessageSeverityFlagBitsEXT messageServerity,//ä¸¥é‡æ€§ can use compare
+		VkDebugUtilsMessageTypeFlagsEXT messageType,//æ— å…³è§„èŒƒæˆ–æ€§èƒ½ï¼Œè§„èŒƒç›¸å…³æˆ–å¯èƒ½çš„é”™è¯¯ï¼Œæ€§èƒ½ç›¸å…³
 		/*
 		pMessage: The debug message as a null-terminated string
 
@@ -465,7 +463,7 @@ private:
 		return details;
 	}
 
-	//find the right settings£º
+	//find the right settingsï¼š
 	//	* Surface format(color depth)
 	//
 	//	* Presentation mode(conditions for "swapping" images to the screen)
@@ -500,11 +498,11 @@ private:
 			int width, height;
 			glfwGetFramebufferSize(window, &width, &height);
 
-			VkExtent2D actualExtent{//extent ÓĞ´óĞ¡¡¢³¤¶ÈµÄÒâË¼
+			VkExtent2D actualExtent{//extent æœ‰å¤§å°ã€é•¿åº¦çš„æ„æ€
 				static_cast<uint32_t>(width),
 				static_cast<uint32_t>(height)
 			};
-			//clamp :°´²ÎÊı2,3·¶Î§½ØÈ¡²ÎÊı1
+			//clamp :æŒ‰å‚æ•°2,3èŒƒå›´æˆªå–å‚æ•°1
 			actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
 			actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
 
@@ -520,7 +518,7 @@ private:
 		VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);//most about Resolution of iamges which are going to be present in display
 
 		uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
-		//0 ´ú±íÃ»ÏŞÖÆ£¬ËùÒÔÅĞ¶Ï´óÓÚ0²ÅÖªµÀ×î´óÖµÓĞÖµ£¬´ËÊ±imageCountµÈÓÚ×îĞ¡Öµ£¬Èç¹û´óÓÚ×î´óÖµ£¬ÄÇÃ´×îĞ¡Öµ¾Í´óÓÚ×î´óÖµÁË£¬µ«ÊÇ²»ÄÜ³¬¹ı×î´óÖµ£¬ËùÒÔ°Ñ×î´óÖµ¸³Öµ¸øimageCount£¬ÕâÀïºÜÆæ¹Ö£¬ÎªÊ²Ã´×îĞ¡Öµ»á´óÓÚ×î´óÖµ
+		//0 ä»£è¡¨æ²¡é™åˆ¶ï¼Œæ‰€ä»¥åˆ¤æ–­å¤§äº0æ‰çŸ¥é“æœ€å¤§å€¼æœ‰å€¼ï¼Œæ­¤æ—¶imageCountç­‰äºæœ€å°å€¼ï¼Œå¦‚æœå¤§äºæœ€å¤§å€¼ï¼Œé‚£ä¹ˆæœ€å°å€¼å°±å¤§äºæœ€å¤§å€¼äº†ï¼Œä½†æ˜¯ä¸èƒ½è¶…è¿‡æœ€å¤§å€¼ï¼Œæ‰€ä»¥æŠŠæœ€å¤§å€¼èµ‹å€¼ç»™imageCountï¼Œè¿™é‡Œå¾ˆå¥‡æ€ªï¼Œä¸ºä»€ä¹ˆæœ€å°å€¼ä¼šå¤§äºæœ€å¤§å€¼
 		if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
 			imageCount = swapChainSupport.capabilities.maxImageCount;
 		}
@@ -541,12 +539,12 @@ private:
 		uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(),indices.presentFamily.value() };
 
 		if (indices.graphicsFamily != indices.presentFamily) {
-			createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;//²¢ĞĞ£¬ÎŞĞè´«µİÍ¼Ïñ
+			createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;//å¹¶è¡Œï¼Œæ— éœ€ä¼ é€’å›¾åƒ
 			createInfo.queueFamilyIndexCount = 2;
 			createInfo.pQueueFamilyIndices = queueFamilyIndices;
 		}
 		else {
-			createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;//¶ÀÁ¢µÄ
+			createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;//ç‹¬ç«‹çš„
 			createInfo.queueFamilyIndexCount = 0;
 			createInfo.pQueueFamilyIndices = nullptr;
 		}
@@ -554,8 +552,8 @@ private:
 		createInfo.preTransform = swapChainSupport.capabilities.currentTransform;//like a 90 degree clockwise rotation or horizontal flip,To specify that you do not want any transformation, simply specify the current transformation.
 		createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;//if the alpha channel should be used for blending with other windows in the window system
 		createInfo.presentMode = presentMode;
-		createInfo.clipped = VK_TRUE;//ÉèÖÃÎªÕæ£¬ÔòÀıÈç±»ÆäËû´°¿ÚÕÚ±ÎµÄ²¿·Ö¾Í²»¹ØĞÄ¡£¿ÉÒÔÌá¸ßĞÔÄÜ¡£³ı·ÇĞèÒª¶ÁÈ¡±»ÕÚ±ÎµÄÏñËØºÍÔ¤²âµÄ½á¹û
-		createInfo.oldSwapchain = VK_NULL_HANDLE;//ÀıÈç´°¿ÚËõ·ÅÊ±£¬±ØĞë´ÓÍ·¿ªÊ¼ÖØĞÂ´´½¨swapchain²¢ÇÒ¸øÕâ¸ö²ÎÊıÖ¸¶¨¾ÉµÄswapchain¡£ÏÖÔÚ¼ò»¯´¦ÀíÎÒÃÇÖ»ÓÃÒ»¸ö£¬²»ÒªËõ·Å´°¿Ú¡£
+		createInfo.clipped = VK_TRUE;//è®¾ç½®ä¸ºçœŸï¼Œåˆ™ä¾‹å¦‚è¢«å…¶ä»–çª—å£é®è”½çš„éƒ¨åˆ†å°±ä¸å…³å¿ƒã€‚å¯ä»¥æé«˜æ€§èƒ½ã€‚é™¤ééœ€è¦è¯»å–è¢«é®è”½çš„åƒç´ å’Œé¢„æµ‹çš„ç»“æœ
+		createInfo.oldSwapchain = VK_NULL_HANDLE;//ä¾‹å¦‚çª—å£ç¼©æ”¾æ—¶ï¼Œå¿…é¡»ä»å¤´å¼€å§‹é‡æ–°åˆ›å»ºswapchainå¹¶ä¸”ç»™è¿™ä¸ªå‚æ•°æŒ‡å®šæ—§çš„swapchainã€‚ç°åœ¨ç®€åŒ–å¤„ç†æˆ‘ä»¬åªç”¨ä¸€ä¸ªï¼Œä¸è¦ç¼©æ”¾çª—å£ã€‚
 
 		if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create swap chain!");
@@ -598,7 +596,7 @@ private:
 			createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
 			createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
 
-			//The subresourceRange field describes what the image¡¯s purpose is and which part of the image should be accessed. 
+			//The subresourceRange field describes what the imageâ€™s purpose is and which part of the image should be accessed. 
 			// Our images will be used as color targets without any mipmapping levels or multiple layers.
 			createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 			createInfo.subresourceRange.baseMipLevel = 0;
@@ -638,6 +636,67 @@ private:
 		fragShaderStageInfo.pName = "main";
 
 		VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+		//vertex input, no vertex data to load for now
+		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+		vertexInputInfo.vertexBindingDescriptionCount = 0;
+		vertexInputInfo.pVertexBindingDescriptions = nullptr; // Optional
+		vertexInputInfo.vertexAttributeDescriptionCount = 0;
+		vertexInputInfo.pVertexAttributeDescriptions = nullptr; // Optional
+
+		//Input Assembly
+		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
+		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+		inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+		//å¦‚æœåœ¨dynamic stateé‡Œè®¾ç½®äº†åŠ¨æ€ä½¿ç”¨viewportå’Œscissorï¼Œå°±ä¸ç”¨æ‰‹åŠ¨è®¾ç½®ï¼Œåªè¦æŒ‡å®šæ•°é‡å³å¯
+		VkPipelineViewportStateCreateInfo viewportState{};
+		viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+		viewportState.viewportCount = 1;
+		viewportState.scissorCount = 1;
+
+		////viewports
+		//VkViewport viewport{};
+		//viewport.x = 0.0f;
+		//viewport.y = 0.0f;
+		//viewport.width = (float)swapChainExtent.width;
+		//viewport.height = (float)swapChainExtent.height;
+		//viewport.minDepth = 0.0f;
+		//viewport.maxDepth = 1.0f;
+		////scissor rectangle ä¸èƒ½è¶…è¿‡viewport
+		//VkRect2D scissor{};
+		//scissor.offset = { 0, 0 };
+		//scissor.extent = swapChainExtent;
+
+		//æ·±åº¦æµ‹è¯•ã€é¢å‰”é™¤ã€scissor testè£å‰ªçŸ©å½¢æµ‹è¯•ã€è¾“å‡ºæ•´ä¸ªå‡ ä½•ä½“æˆ–åªæ˜¯çº¿ï¼ˆçº¿æ¡†æ¸²æŸ“ï¼‰
+		VkPipelineRasterizationStateCreateInfo rasterizer{};
+		rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+		rasterizer.depthClampEnable = VK_FALSE;
+		rasterizer.rasterizerDiscardEnable = VK_FALSE;
+		rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+		rasterizer.lineWidth = 1.0f;
+		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+		rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;//ç¯ç»•é¡ºåºä¸ºé¡ºæ—¶é’ˆåˆ™ä¸ºæ­£é¢
+		rasterizer.depthBiasEnable = VK_FALSE;
+		rasterizer.depthBiasConstantFactor = 0.0f; // Optional
+		rasterizer.depthBiasClamp = 0.0f; // Optional
+		rasterizer.depthBiasSlopeFactor = 0.0f; // Optional
+
+		//dynamic state
+		std::vector<VkDynamicState> dynamicStates = {
+			VK_DYNAMIC_STATE_VIEWPORT,
+			VK_DYNAMIC_STATE_SCISSOR
+		};
+
+		VkPipelineDynamicStateCreateInfo dynamicState{};
+		dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+		dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+		dynamicState.pDynamicStates = dynamicStates.data();
+
+
+
 		//clean up
 		vkDestroyShaderModule(device, fragShaderModule, nullptr);
 		vkDestroyShaderModule(device, vertShaderModule, nullptr);

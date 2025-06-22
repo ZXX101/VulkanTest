@@ -20,11 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader.vert">
-      <Filter>源文件</Filter>
-    </None>
-    <None Include="shader.frag">
-      <Filter>源文件</Filter>
-    </None>
+    <None Include="shader\shader.frag" />
+    <None Include="shader\shader.vert" />
   </ItemGroup>
 </Project>
