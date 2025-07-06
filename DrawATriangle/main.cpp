@@ -146,18 +146,19 @@ private:
 
 		Present the swap chain image*/
 	void drawFrame() {
+		//1.等待上一帧完成：通过栅栏确保GPU不超载
 		vkWaitForFences(device, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
 		vkResetFences(device, 1, &inFlightFence);
-
+		//2.获取交换链图像：得到可渲染的目标图像
 		//acquire an image from the swap chain
 		uint32_t imageIndex;
 		vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
-
+		//3.重置并记录命令：填充命令缓冲区
 		//recording the command buffer
 		vkResetCommandBuffer(commandBuffer, 0);
 		recordCommandBuffer(commandBuffer, imageIndex);
-
+		//4.提交渲染命令：将命令缓冲区送入图形队列
 		//submit the command buffer
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -178,7 +179,7 @@ private:
 		if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence) != VK_SUCCESS) {
 			throw std::runtime_error("failed to submit draw command buffer!");
 		}
-
+		//5.呈现渲染结果：将完成图像提交给显示队列
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
@@ -666,7 +667,7 @@ private:
 		VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities); // most about Resolution of iamges which are going to be present in display
 
 		uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
-		// 0 代表没限制，所以判断大于0才知道最大值有值，此时imageCount等于最小值，如果大于最大值，那么最小值就大于最大值了，但是不能超过最大值，所以把最大值赋值给imageCount，这里很奇怪，为什么最小值会大于最大值
+		// 0 代表没限制，所以判断大于0才知道最大值有值，此时imageCount等于最小值+1，如果大于最大值，就赋值成最大值
 		if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
 		{
 			imageCount = swapChainSupport.capabilities.maxImageCount;
@@ -687,6 +688,7 @@ private:
 		QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 		uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
+		//这里运行出来两个都是0
 		if (indices.graphicsFamily != indices.presentFamily)
 		{
 			createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT; // 并行，无需传递图像
@@ -983,6 +985,8 @@ private:
 
 	//createFramebuffers
 	void createFramebuffers() {
+		//FrameBuffer
+		//注意这里的VKFrameBuffer，声明为：std::vector<VkFramebuffer> swapChainFramebuffers;
 		swapChainFramebuffers.resize(swapChainImageViews.size());
 
 		for (size_t i = 0; i < swapChainImageViews.size(); i++) {
