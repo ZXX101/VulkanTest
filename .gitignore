@@ -29,7 +29,10 @@
 !*.vcxproj
 !*.vcxproj.filters
 !*.sln
-!**.bat
+!*.bat
+!*.vert
+!*.frag
+!*.spv
 # 忽略特定文件
 CMakeUserPresets.json
 *.user
