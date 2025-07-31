@@ -10,6 +10,8 @@
 #include <limits>
 #include <algorithm>
 
+//this is triditional version，with out vulkan raii
+
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
