@@ -1,6 +1,5 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h> //GLFW will include its own definitions and automatically load the Vulkan header with it
-
 #include <iostream>
 #include <stdexcept>
 #include <cstdlib>
